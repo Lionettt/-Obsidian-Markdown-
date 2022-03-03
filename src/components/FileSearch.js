@@ -1,26 +1,31 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
+
+import useKeyPress from '../hooks/useKeyPress'
+
+
 export default function FileSearch(props) {
-  const { onFileSearch } = props
   const [inputActive, setInputActive] = useState(false);
   const [value, setValue] = useState('');
-  const closeSearch = (e) => {
-    e.preventDefault();
+  const enterPressed = useKeyPress(13);
+  const escPressed = useKeyPress(27)
+
+  const onFileSearch = (value) => {
+    console.log(value)
+  };
+  const closeSearch = () => {
     setInputActive(false);
     setValue('');
   }
+
   useEffect(() => {
-    const handleInputEvent = (event) => {
-      const { ketCode } = event;
-      if (ketCode === 13 && inputActive) {
-        onFileSearch(value);
-      } else if (ketCode === 27 && inputActive) {
-        closeSearch(event)
-      }
+    if (enterPressed && inputActive) {
+      onFileSearch(value)
     }
-    document.addEventListener('keyup', handleInputEvent);
-    return () => {
-      document.removeEventListener('keyUp', handleInputEvent)
+    if (escPressed && inputActive) {
+      closeSearch()
     }
   })
   return (
@@ -30,15 +35,19 @@ export default function FileSearch(props) {
           <span>Lionet</span>
           <button
             type="button"
-            className="btn btn-primary"
+            className="icon-button"
             onClick={() => { setInputActive(true) }}
           >
-            搜索
+            <FontAwesomeIcon
+              title="搜索"
+              size="lg"
+              icon={faSearch}
+            />
           </button>
         </div>
       }
       {inputActive &&
-        <div>
+        <div d-flex justify-content-between align-items-center>
           <input
             className="from-control col-8"
             value={value}
@@ -50,7 +59,11 @@ export default function FileSearch(props) {
             type="button"
             onClick={() => { setInputActive(false) }}
           >
-            返回
+            <FontAwesomeIcon
+              title="关闭"
+              size="lg"
+              icon={faTimes}
+            />
           </button>
         </div>
 

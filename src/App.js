@@ -9,12 +9,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import "easymde/dist/easymde.min.css"
 
 import FileSearch from './components/FileSearch'
-// import FileList from './components/FileList'
-// import BottomBtn from './components/BottomBtn'
-// import TabList from './components/TabList'
+import FileList from './components/FileList'
+import BottomBtn from './components/BottomBtn'
+import TabList from './components/TabList'
 // import Loader from './components/Loader'
 // import useIpcRenderer from './hooks/useIpcRenderer'
 // require node.js modules
+
+
 const { join, basename, extname, dirname } = window.require('path')
 const { remote, ipcRenderer } = window.require('electron')
 const Store = window.require('electron-store')
@@ -251,17 +253,25 @@ function App() {
 
   return (
     <div className="App container-fluid px-0">
-      <div className="row">
-        <div className="col-3 bg-light left-panel">
-          <FileSearch
-            onFileSearch={() => { }}
-          />
-          {/* <FileList
-            defaultFiles={defaultFiles}
-          /> */}
+      <div className="row no-gutters">
+        <div className="col bg-light left-panel">
+          <FileSearch />
+          <FileList />
+          <div className="row">
+            <div className="col">
+              <BottomBtn 
+                text='新建'
+                icon={faPlus}
+              />
+               <BottomBtn 
+                text='导入'
+                icon={faFileImport}
+              />
+            </div>
+          </div>
         </div>
-        <div className="col-9 bg-primary right">
-          right
+        <div className="col-9  right-panel">
+          <TabList />
         </div>
       </div>
     </div>
