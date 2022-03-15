@@ -31,7 +31,7 @@ export default function FileSearch(props) {
   return (
     <div className="alert alert-primary d-flex justify-content-between align-items-center mb-0">
       {!inputActive &&
-        <div className="d-flex justify-content-between align-items-center">
+        <div>
           <span>Lionet</span>
           <button
             type="button"
@@ -47,7 +47,7 @@ export default function FileSearch(props) {
         </div>
       }
       {inputActive &&
-        <div d-flex justify-content-between align-items-center>
+        <div calssName="d-flex justify-content-between align-items-center">
           <input
             className="from-control col-8"
             value={value}

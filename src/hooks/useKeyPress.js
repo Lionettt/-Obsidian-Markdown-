@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 const useKeyPress = (currentKeyCode) => {
   const [keyPressed, setKeyPressed] = useState(false)
-
+  
   //解构事件对象，根据数字处理情况
   const keyDownHandler = ({ keyCode }) => {
     if (keyCode === currentKeyCode) {

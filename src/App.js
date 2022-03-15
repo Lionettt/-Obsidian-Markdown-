@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { faPlus, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import SimpleMDE from "react-simplemde-editor"
 import uuidv4 from 'uuid/v4'
 import { flattenArr, objToArr, timestampToString } from './utils/helper'
@@ -12,48 +11,84 @@ import FileSearch from './components/FileSearch'
 import FileList from './components/FileList'
 import BottomBtn from './components/BottomBtn'
 import TabList from './components/TabList'
+import defaultFiles from './utils/defaultFiles'
 // import Loader from './components/Loader'
 // import useIpcRenderer from './hooks/useIpcRenderer'
 // require node.js modules
 
+function App() {
 
-const { join, basename, extname, dirname } = window.require('path')
-const { remote, ipcRenderer } = window.require('electron')
-const Store = window.require('electron-store')
-const fileStore = new Store({ 'name': 'Files Data' })
-const settingsStore = new Store({ name: 'Settings' })
-const getAutoSync = () => ['accessKey', 'secretKey', 'bucketName', 'enableAutoSync'].every(key => !!settingsStore.get(key))
-const saveFilesToStore = (files) => {
-  // we don't have to store any info in file system, eg: isNew, body ,etc
-  const filesStoreObj = objToArr(files).reduce((result, file) => {
-    const { id, path, title, createdAt, isSynced, updatedAt } = file
-    result[id] = {
-      id,
-      path,
-      title,
-      createdAt,
-      isSynced,
-      updatedAt
-    }
-    return result
-  }, {})
-  fileStore.set('files', filesStoreObj)
+  const [files, setFiles] = useState(defaultFiles);
+  const [activeFileID, setActiveFileID] = useState('');//点击左边列表的id
+  const [openedFileIDs, setOpenedFileIDs] = useState([]); //右边打开文件
+  const [unsaveFilesIDs, setUnsaveFilesIDs] = useState([]);
+ 
+  const avtiveFile = files.find(file => file.id === activeFileID);
+
+  return (
+    <div className="App container-fluid px-0">
+      <div className="row no-gutters">
+        <div className="col bg-light left-panel">
+          <FileSearch />
+          <FileList />
+          <div className="row">
+            <div className="col">
+              <BottomBtn />
+            </div>
+          </div>
+        </div>
+        <div className="col-9  right-panel">
+          <TabList />
+          <SimpleMDE
+            value={avtiveFile && avtiveFile.body}
+            onChange={value => { console.log(value); }}
+            options={{ minHeight: '515px'}}
+          />
+        </div>
+      </div>
+    </div>
+  )
 }
 
-function App() {
-  const [files, setFiles] = useState(fileStore.get('files') || {})
-  const [activeFileID, setActiveFileID] = useState('')
-  const [openedFileIDs, setOpenedFileIDs] = useState([])
-  const [unsavedFileIDs, setUnsavedFileIDs] = useState([])
-  const [searchedFiles, setSearchedFiles] = useState([])
-  const [isLoading, setLoading] = useState(false)
-  const filesArr = objToArr(files)
-  const savedLocation = settingsStore.get('savedFileLocation') || remote.app.getPath('documents')
-  const activeFile = files[activeFileID]
-  const openedFiles = openedFileIDs.map(openID => {
-    return files[openID]
-  })
-  const fileListArr = (searchedFiles.length > 0) ? searchedFiles : filesArr
+export default App;
+
+
+// const { join, basename, extname, dirname } = window.require('path')
+// const { remote, ipcRenderer } = window.require('electron')
+// const Store = window.require('electron-store')
+// const fileStore = new Store({ 'name': 'Files Data' })
+// const settingsStore = new Store({ name: 'Settings' })
+// const getAutoSync = () => ['accessKey', 'secretKey', 'bucketName', 'enableAutoSync'].every(key => !!settingsStore.get(key))
+// const saveFilesToStore = (files) => {
+//   // we don't have to store any info in file system, eg: isNew, body ,etc
+//   const filesStoreObj = objToArr(files).reduce((result, file) => {
+//     const { id, path, title, createdAt, isSynced, updatedAt } = file
+//     result[id] = {
+//       id,
+//       path,
+//       title,
+//       createdAt,
+//       isSynced,
+//       updatedAt
+//     }
+//     return result
+//   }, {})
+//   fileStore.set('files', filesStoreObj)
+// }
+
+ // const [files, setFiles] = useState(fileStore.get('files') || {})
+  // const [activeFileID, setActiveFileID] = useState('')
+  // const [openedFileIDs, setOpenedFileIDs] = useState([])
+  // const [unsavedFileIDs, setUnsavedFileIDs] = useState([])
+  // const [searchedFiles, setSearchedFiles] = useState([])
+  // const [isLoading, setLoading] = useState(false)
+  // const filesArr = objToArr(files)
+  // const savedLocation = settingsStore.get('savedFileLocation') || remote.app.getPath('documents')
+  // const activeFile = files[activeFileID]
+  // const openedFiles = openedFileIDs.map(openID => {
+  //   return files[openID]
+  // })
+  // const fileListArr = (searchedFiles.length > 0) ? searchedFiles : filesArr
 
   // const fileClick = (fileID) => {
   //   // set current active file
@@ -250,32 +285,3 @@ function App() {
   //   'files-uploaded': filesUploaded,
   //   'loading-status': (message, status) => { setLoading(status) }
   // })
-
-  return (
-    <div className="App container-fluid px-0">
-      <div className="row no-gutters">
-        <div className="col bg-light left-panel">
-          <FileSearch />
-          <FileList />
-          <div className="row">
-            <div className="col">
-              <BottomBtn 
-                text='新建'
-                icon={faPlus}
-              />
-               <BottomBtn 
-                text='导入'
-                icon={faFileImport}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="col-9  right-panel">
-          <TabList />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default App;
