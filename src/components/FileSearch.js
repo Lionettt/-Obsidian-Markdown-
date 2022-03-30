@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 
@@ -7,32 +7,39 @@ import useKeyPress from '../hooks/useKeyPress'
 
 
 export default function FileSearch(props) {
+  const { searchList } = props
   const [inputActive, setInputActive] = useState(false);
   const [value, setValue] = useState('');
   const enterPressed = useKeyPress(13);
   const escPressed = useKeyPress(27)
+  
+  let node = useRef(null)
 
-  const onFileSearch = (value) => {
-    console.log(value)
-  };
   const closeSearch = () => {
     setInputActive(false);
     setValue('');
+    searchList('');
   }
 
   useEffect(() => {
     if (enterPressed && inputActive) {
-      onFileSearch(value)
+      searchList(value)
     }
     if (escPressed && inputActive) {
       closeSearch()
     }
   })
+
+  useEffect(() => {
+    if (inputActive) {
+      node.current.focus()
+    }
+  }, [inputActive])
   return (
     <div className="alert alert-primary d-flex justify-content-between align-items-center mb-0">
       {!inputActive &&
         <div>
-          <span>Lionet</span>
+          <span className="h2">Lionet</span>
           <button
             type="button"
             className="icon-button"
@@ -47,9 +54,10 @@ export default function FileSearch(props) {
         </div>
       }
       {inputActive &&
-        <div calssName="d-flex justify-content-between align-items-center">
+        <div className="d-flex justify-content-between align-items-center">
           <input
             className="from-control col-8"
+            ref={node}
             value={value}
             onChange={(e) => { setValue(e.target.value) }}
           >
@@ -57,7 +65,7 @@ export default function FileSearch(props) {
           <button
             className="btn btn-primary col-4"
             type="button"
-            onClick={() => { setInputActive(false) }}
+            onClick={() => { closeSearch() }}
           >
             <FontAwesomeIcon
               title="关闭"
