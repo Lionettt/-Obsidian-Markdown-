@@ -23,7 +23,7 @@ function App() {
   const fileListArr = (searchedFiles.length > 0) ? searchedFiles : files;
 
 
-  const listDelet = (e, defaultFiles) => {
+  const listDelete = (e, defaultFiles) => {
     const filterList = files.filter(files => files.id !== defaultFiles.id)
     
     setFiles(filterList)
@@ -61,11 +61,11 @@ function App() {
       setActiveFileID('')
     }
   }
-  const searchList = (keyword) => {
-    const newFiles = files.filter(file => {
-      return file.title.includes(keyword);
+  const searchList = (value) => {
+    const newlistFiles = files.filter(file => {
+      return file.title.includes(value);
     })
-    setSearchedFiles(newFiles)
+    setSearchedFiles(newlistFiles)
     
   }
 
@@ -86,7 +86,7 @@ function App() {
             defaultFiles={fileListArr}
             activeid={activeFileID}
             opendTab={opendTab}
-            listDelet={listDelet}
+            listDelete={listDelete}
             upDateListName={upDateListName}
           />
           <div className="row button-group">

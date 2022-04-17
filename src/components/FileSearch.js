@@ -5,14 +5,14 @@ import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 import useKeyPress from '../hooks/useKeyPress'
 
-
 export default function FileSearch(props) {
   const { searchList } = props
-  const [inputActive, setInputActive] = useState(false);
-  const [value, setValue] = useState('');
+
+  const [inputActive, setInputActive] = useState(false); //控制输入框是否高亮
+  const [value, setValue] = useState('');  //输入框的value
+
   const enterPressed = useKeyPress(13);
   const escPressed = useKeyPress(27)
-  
   let node = useRef(null)
 
   const closeSearch = () => {
@@ -29,12 +29,12 @@ export default function FileSearch(props) {
       closeSearch()
     }
   })
-
   useEffect(() => {
     if (inputActive) {
       node.current.focus()
     }
   }, [inputActive])
+
   return (
     <div className="alert alert-primary d-flex justify-content-between align-items-center mb-0">
       {!inputActive &&
@@ -63,7 +63,7 @@ export default function FileSearch(props) {
           >
           </input>
           <button
-            className="btn btn-primary col-4"
+            className="btn btn-primary col-4 " 
             type="button"
             onClick={() => { closeSearch() }}
           >

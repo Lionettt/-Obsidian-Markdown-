@@ -6,35 +6,27 @@ import { faTimes, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import useKeyPress from '../hooks/useKeyPress'
 
 export default function FileList(props) {
-  const { defaultFiles, opendTab, listDelet, upDateListName } = props;
+  const { defaultFiles, opendTab, listDelete, upDateListName } = props;
 
-  const [ediStatus, setEdiStatus] = useState(false)
-  const [value, setValue] = useState('')
+  const [ediStatus, setEdiStatus] = useState(false) //编辑状态
+  const [value, setValue] = useState('')//编辑值
+
   const enterPressed = useKeyPress(13);
   const escPressed = useKeyPress(27)
-
-
-
 
   const listEdit = (defaultFiles) => {
     setEdiStatus(defaultFiles.id)
     setValue(defaultFiles.title)
   }
-  const listEditClose = (defaultFiles) => {
+  const listEditClose = () => {
     setEdiStatus(false);
     setValue('');
-
-  }
-
-  // 编辑状态的时候
-  const onSaveEdit = (id, value) => {
-    upDateListName(id, value)
   }
 
   useEffect(() => {
     if (enterPressed && ediStatus) {
       const ediItem = defaultFiles.find(defaultFiles => defaultFiles.id === ediStatus)
-      onSaveEdit(ediItem.id, value)
+      upDateListName(ediItem.id, value)
       setEdiStatus(false);
       setValue('')
     }
@@ -54,7 +46,7 @@ export default function FileList(props) {
               data-id={defaultFiles.id}
               data-title={defaultFiles.title}
             >
-              {(defaultFiles.id !== ediStatus) &&
+              {(ediStatus !== defaultFiles.id) &&
                 <>
                   <span
                     className="col-8 c-link"
@@ -76,7 +68,7 @@ export default function FileList(props) {
                   <button
                     className='icon-button col-1'
                     type="button"
-                    onClick={(e) => { listDelet(e, defaultFiles) }}
+                    onClick={(e) => { listDelete(e, defaultFiles) }}
                   >
                     <FontAwesomeIcon
                       title="删除"
@@ -86,7 +78,7 @@ export default function FileList(props) {
                   </button>
                 </>
               }
-              {(defaultFiles.id === ediStatus) &&
+              {(ediStatus === defaultFiles.id) &&
                 <>
                   <input
                     className="form-control col-10"
@@ -96,7 +88,7 @@ export default function FileList(props) {
                   <button
                     className="icon-button col-2"
                     type="button"
-                    onClick={(e) => { listEditClose(e) }}
+                    onClick={() => { listEditClose() }}
                   >
                     <FontAwesomeIcon
                       title="退出"
