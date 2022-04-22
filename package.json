@@ -4,10 +4,10 @@
   "main": "main.js",
   "description": "Online Markdown Editor using Qiniu cloud service",
   "author": {
-    "name": "Viking Zhang",
-    "email": "vikingmute@gmail.com"
+    "name": "lionet",
+    "email": "735954706@gmail.com"
   },
-  "repository": "https://github.com/vikingmute/clouddoc",
+  "repository": "https://github.com/Lionettt",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",

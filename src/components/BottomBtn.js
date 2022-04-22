@@ -3,14 +3,15 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faFileImport } from '@fortawesome/free-solid-svg-icons'
 
-export default function BottomBtn() {
+export default function BottomBtn(props) {
+  const { createFile } = props;
   return (
     <div className="row no-gutters button-group">
       <div className="col">
         <button
           type="button"
           className={`btn btn-block no-border btn-primary`}
-          onClick={() => { }}
+          onClick={createFile}
         >
           <FontAwesomeIcon
             className="mr-2"

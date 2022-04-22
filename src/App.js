@@ -3,6 +3,7 @@ import SimpleMDE from "react-simplemde-editor"
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "easymde/dist/easymde.min.css"
+import uuidv4 from 'uuid/v4'
 
 import FileSearch from './components/FileSearch'
 import FileList from './components/FileList'
@@ -25,7 +26,6 @@ function App() {
 
   const listDelete = (e, defaultFiles) => {
     const filterList = files.filter(files => files.id !== defaultFiles.id)
-    
     setFiles(filterList)
     tabClose(e, defaultFiles)
   }
@@ -33,6 +33,7 @@ function App() {
     const newLists = files.map(file => {
       if (file.id === id) {
         file.title = title
+        file.isNew = false
       }
       return file;
     })
@@ -69,6 +70,21 @@ function App() {
     
   }
 
+
+  const createFile = () => {
+    const newID = uuidv4();
+    const newFiles = [
+      ...files,
+      {
+        id: newID,
+        title: '',
+        body: '请输入 markdown',
+        createdAt: new Date().getTime(),
+        isNew: true,
+      }
+    ]
+    setFiles(newFiles);
+  }
   const ediMDE = (defaultFiles) => {
     console.log(defaultFiles)
   }
@@ -91,7 +107,9 @@ function App() {
           />
           <div className="row button-group">
             <div className="col ">
-              <BottomBtn />
+              <BottomBtn 
+                createFile={createFile}
+              />
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect, } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 
@@ -8,32 +8,49 @@ import useKeyPress from '../hooks/useKeyPress'
 export default function FileList(props) {
   const { defaultFiles, opendTab, listDelete, upDateListName } = props;
 
-  const [ediStatus, setEdiStatus] = useState(false) //编辑状态
-  const [value, setValue] = useState('')//编辑值
-
+  const [ediStatus, setEdiStatus] = useState(false)
+  const [value, setValue] = useState('')//编辑内容
   const enterPressed = useKeyPress(13);
   const escPressed = useKeyPress(27)
+  let node = useRef(null);
 
   const listEdit = (defaultFiles) => {
     setEdiStatus(defaultFiles.id)
     setValue(defaultFiles.title)
   }
-  const listEditClose = () => {
+  const listEditClose = (ediItem) => {
     setEdiStatus(false);
     setValue('');
+    if (ediItem.isNew) {
+      listDelete(ediItem.id)
+    }
   }
+//选中效果
+  useEffect(() => {
+    if (ediStatus) {
+      node.current.focus()
+    }
+  }, [ediStatus])
 
   useEffect(() => {
-    if (enterPressed && ediStatus) {
-      const ediItem = defaultFiles.find(defaultFiles => defaultFiles.id === ediStatus)
+    const ediItem = defaultFiles.find(defaultFiles => defaultFiles.id === ediStatus)
+    if (enterPressed && ediStatus && value.trim() !== '') { //trim方法
       upDateListName(ediItem.id, value)
       setEdiStatus(false);
       setValue('')
     }
     if (escPressed && ediStatus) {
-      listEditClose()
+      listEditClose(ediItem)
     }
   })
+
+  useEffect(() => {
+    const newFile = defaultFiles.find(defaultFiles => defaultFiles.isNew)
+    if (newFile) {
+      setEdiStatus(newFile.id);
+      setValue(newFile.title);
+    }
+  }, [defaultFiles])
 
   return (
     <ul className="list-group list-group-flush file-list">
@@ -46,7 +63,7 @@ export default function FileList(props) {
               data-id={defaultFiles.id}
               data-title={defaultFiles.title}
             >
-              {(ediStatus !== defaultFiles.id) &&
+              {((ediStatus !== defaultFiles.id) && !defaultFiles.isNew) &&
                 <>
                   <span
                     className="col-8 c-link"
@@ -78,17 +95,19 @@ export default function FileList(props) {
                   </button>
                 </>
               }
-              {(ediStatus === defaultFiles.id) &&
+              {((ediStatus === defaultFiles.id) || defaultFiles.isNew) &&
                 <>
                   <input
                     className="form-control col-10"
+                    placeholder='请输入文件名'
                     value={value}
+                    ref={node}
                     onChange={e => { setValue(e.target.value) }}
                   />
                   <button
                     className="icon-button col-2"
                     type="button"
-                    onClick={() => { listEditClose() }}
+                    onClick={() => {listEditClose(defaultFiles)}}
                   >
                     <FontAwesomeIcon
                       title="退出"
