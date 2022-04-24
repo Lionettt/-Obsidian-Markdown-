@@ -4,7 +4,7 @@ export const flattenArr = (arr) => {
       return map
     }, {})
   }
-
+//数组转为对象
 
 
   export const objToArr = (obj) => {
