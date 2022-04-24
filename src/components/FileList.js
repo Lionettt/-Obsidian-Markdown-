@@ -22,15 +22,9 @@ export default function FileList(props) {
     setEdiStatus(false);
     setValue('');
     if (ediItem.isNew) {
-      listDelete(ediItem.id)
+      listDelete(ediItem)
     }
   }
-//选中效果
-  useEffect(() => {
-    if (ediStatus) {
-      node.current.focus()
-    }
-  }, [ediStatus])
 
   useEffect(() => {
     const ediItem = defaultFiles.find(defaultFiles => defaultFiles.id === ediStatus)
@@ -43,7 +37,7 @@ export default function FileList(props) {
       listEditClose(ediItem)
     }
   })
-
+//新建逻辑
   useEffect(() => {
     const newFile = defaultFiles.find(defaultFiles => defaultFiles.isNew)
     if (newFile) {
@@ -52,6 +46,14 @@ export default function FileList(props) {
     }
   }, [defaultFiles])
 
+  //选中效果
+  useEffect(() => {
+    if (ediStatus) {
+      node.current.focus()
+    }
+  }, [ediStatus])
+
+  
   return (
     <ul className="list-group list-group-flush file-list">
       {
@@ -85,7 +87,7 @@ export default function FileList(props) {
                   <button
                     className='icon-button col-1'
                     type="button"
-                    onClick={(e) => { listDelete(e, defaultFiles) }}
+                    onClick={(e) => { listDelete(defaultFiles) }}
                   >
                     <FontAwesomeIcon
                       title="删除"
@@ -107,7 +109,7 @@ export default function FileList(props) {
                   <button
                     className="icon-button col-2"
                     type="button"
-                    onClick={() => {listEditClose(defaultFiles)}}
+                    onClick={(e) => {listEditClose( defaultFiles)}}
                   >
                     <FontAwesomeIcon
                       title="退出"

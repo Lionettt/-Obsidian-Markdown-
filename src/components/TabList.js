@@ -5,8 +5,8 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import './TabList.scss'
 
 export default function TabList(props) {
-  const {openTabList, acvtiveTabFile, unSaveTabIDs, setTabActive, tabClose } = props;
-  
+  const { openTabList, acvtiveTabFile, unSaveTabIDs, setTabActive, tabClose } = props;
+
   return (
     <ul className="nav nav-pills tablist-component">
       {openTabList.map(defaultFiles => {
@@ -16,18 +16,18 @@ export default function TabList(props) {
           'active': defaultFiles.id === acvtiveTabFile,
           'withUnsaved': withUnsavedMark
         })
-        
+
         return (
           <li className="nav-item" key={defaultFiles.id}>
             <a
               href="#"
               className={fClassName}
-              onClick={(e) => { setTabActive(e,defaultFiles)}}
+              onClick={(e) => { e.preventDefault(); setTabActive(defaultFiles) }}
             >
               {defaultFiles.title}
               <span
                 className="ml-2 close-icon"
-                onClick={(e) => { tabClose(e, defaultFiles) }}
+                onClick={(e) => { e.stopPropagation(); tabClose(defaultFiles) }}
               >
                 <FontAwesomeIcon
                   icon={faTimes}

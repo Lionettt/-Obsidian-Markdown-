@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SimpleMDE from "react-simplemde-editor"  
+import SimpleMDE from "react-simplemde-editor"
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import "easymde/dist/easymde.min.css"
@@ -10,13 +10,16 @@ import FileList from './components/FileList'
 import BottomBtn from './components/BottomBtn'
 import TabList from './components/TabList'
 import defaultFiles from './utils/defaultFiles'
+import { flattenArr, objToArr } from './utils/helper'
 
 function App() {
+
   const [files, setFiles] = useState(defaultFiles);//
   const [activeFileID, setActiveFileID] = useState('');//点击被激活的文件的id
   const [openedFileIDs, setOpenedFileIDs] = useState([]); //打开文件的id，打开文件
   const [unsaveFilesIDs, setUnsaveFilesIDs] = useState([]);//tab未保存的文件
   const [searchedFiles, setSearchedFiles] = useState([])
+
   const openTabList = openedFileIDs.map(openID => {
     return files.find(file => file.id === openID)
   })
@@ -24,10 +27,10 @@ function App() {
   const fileListArr = (searchedFiles.length > 0) ? searchedFiles : files;
 
 
-  const listDelete = (e, defaultFiles) => {
+  const listDelete = (defaultFiles) => {
     const filterList = files.filter(files => files.id !== defaultFiles.id)
     setFiles(filterList)
-    tabClose(e, defaultFiles)
+    tabClose(defaultFiles)
   }
   const upDateListName = (id, title) => {
     const newLists = files.map(file => {
@@ -47,27 +50,28 @@ function App() {
     }
   }
 
-  const setTabActive = (e, defaultFiles) => {
-    e.preventDefault();
+  const setTabActive = (defaultFiles) => {
     setActiveFileID(defaultFiles.id)
   }
 
-  const tabClose = (e, defaultFiles) => {
-    e.stopPropagation(); //防止冒泡
+  const tabClose = (defaultFiles) => {
     const filterTab = openedFileIDs.filter(tabID => tabID !== defaultFiles.id)
     setOpenedFileIDs(filterTab)
+    
+    //TAB存在的情况
     if (filterTab.length > 0) {
       setActiveFileID(filterTab[filterTab.length - 1])
     } else {
       setActiveFileID('')
     }
   }
+
   const searchList = (value) => {
     const newlistFiles = files.filter(file => {
       return file.title.includes(value);
     })
     setSearchedFiles(newlistFiles)
-    
+
   }
 
 
@@ -107,7 +111,7 @@ function App() {
           />
           <div className="row button-group">
             <div className="col ">
-              <BottomBtn 
+              <BottomBtn
                 createFile={createFile}
               />
             </div>
