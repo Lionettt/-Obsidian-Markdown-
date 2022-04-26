@@ -19,11 +19,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const { join } = window.require('path');
 const { remote } = window.require('electron')
 const Store = window.require('electron-store')
-const fileStore = new Store({ name: '22' })
-//setStore的逻辑
+const fileStore = new Store({ name: '222222' })
+//保存到store的逻辑
 const saveFilesToStore = (files) => {
-  const filesStoreObj = objToArr(files).reduce((result, file) => {
-    const { id, path, title, createdAt } = file
+  const filesStoreObj = objToArr(files).reduce((result, files) => {
+    const { id, path, title, createdAt } = files
+
     result[id] = {
       id,
       path,
@@ -32,11 +33,11 @@ const saveFilesToStore = (files) => {
     }
     return result
   }, {})
-  fileStore.set('files', filesStoreObj)
+  fileStore.set('files', filesStoreObj);
 }
 
 function App() {
-  const [files, setFiles] = useState(fileStore.get('files') || {});//
+  const [files, setFiles] = useState(fileStore.get('files') || {});//从electron-store中取出
   const [activeFileID, setActiveFileID] = useState('');//点击被激活的文件的id
   const [openedFileIDs, setOpenedFileIDs] = useState([]); //打开文件的id，打开文件
   const [unsaveFilesIDs, setUnsaveFilesIDs] = useState([]);//tab未保存的文件
@@ -74,7 +75,8 @@ function App() {
           setFiles(newFiles)
           saveFilesToStore(newFiles)
         })
-    } else {
+    }
+    else {
       const oldPath = join(savedLocation, `${files[id].title}.md`)
       fileHelper.renameFile(oldPath, newPath)
         .then(() => {

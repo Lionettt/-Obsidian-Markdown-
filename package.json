@@ -30,9 +30,9 @@
   },
   "homepage": "./",
   "build": {
-    "appId": "cloudDoc",
-    "productName": "七牛云文档",
-    "copyright": "Copyright © 2019 ${author}",
+    "appId": "Doc",
+    "productName": "lionet的笔记本",
+    "copyright": "Copyright © 2022 ${author}",
     "files": [
       "build/**/*",
       "node_modules/**/*",
@@ -82,7 +82,7 @@
       ],
       "icon": "assets/icon.ico",
       "artifactName": "${productName}-Web-Setup-${version}.${ext}",
-      "publisherName": "Viking Zhang"
+      "publisherName": "lionet"
     },
     "nsis": {
       "allowToChangeInstallationDirectory": true,
