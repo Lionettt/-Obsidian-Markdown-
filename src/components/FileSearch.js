@@ -6,11 +6,10 @@ import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import useKeyPress from '../hooks/useKeyPress'
 
 export default function FileSearch(props) {
-  const { searchList } = props
+  const { searchList,files } = props
 
   const [inputActive, setInputActive] = useState(false); //控制输入框是否高亮
   const [value, setValue] = useState('');  //输入框的value
-
   const enterPressed = useKeyPress(13);
   const escPressed = useKeyPress(27)
   let node = useRef(null)
@@ -18,7 +17,7 @@ export default function FileSearch(props) {
   const closeSearch = () => {
     setInputActive(false);
     setValue('');
-    searchList('');
+    searchList(files);
   }
 
   useEffect(() => {

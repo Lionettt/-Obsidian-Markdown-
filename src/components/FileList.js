@@ -14,6 +14,8 @@ export default function FileList(props) {
   const escPressed = useKeyPress(27)
   let node = useRef(null);
 
+
+
   const listEdit = (defaultFiles) => {
     setEdiStatus(defaultFiles.id)
     setValue(defaultFiles.title)
@@ -28,16 +30,17 @@ export default function FileList(props) {
 
   useEffect(() => {
     const ediItem = defaultFiles.find(defaultFiles => defaultFiles.id === ediStatus)
+    console.log(ediItem)
     if (enterPressed && ediStatus && value.trim() !== '') { //trim方法
-      upDateListName(ediItem.id, value)
-      setEdiStatus(false);
+      upDateListName(ediItem.id, value, ediItem.isNew)
       setValue('')
+      setEdiStatus(false);
     }
     if (escPressed && ediStatus) {
       listEditClose(ediItem)
     }
   })
-//新建逻辑
+  //新建逻辑
   useEffect(() => {
     const newFile = defaultFiles.find(defaultFiles => defaultFiles.isNew)
     if (newFile) {
@@ -53,7 +56,7 @@ export default function FileList(props) {
     }
   }, [ediStatus])
 
-  
+
   return (
     <ul className="list-group list-group-flush file-list">
       {
@@ -109,7 +112,7 @@ export default function FileList(props) {
                   <button
                     className="icon-button col-2"
                     type="button"
-                    onClick={(e) => {listEditClose( defaultFiles)}}
+                    onClick={() => { listEditClose(defaultFiles) }}
                   >
                     <FontAwesomeIcon
                       title="退出"

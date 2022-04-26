@@ -2,7 +2,7 @@
   "name": "cloud-doc",
   "version": "1.0.0",
   "main": "main.js",
-  "description": "Online Markdown Editor using Qiniu cloud service",
+  "description": "Online Markdown Editor",
   "author": {
     "name": "lionet",
     "email": "735954706@gmail.com"
