@@ -18,7 +18,7 @@ export default function FileSearch(props) {
   const closeSearch = () => {
     setInputActive(false);
     setValue('');
-    searchList('files');
+    searchList(files);
   }
 
   useEffect(() => {

@@ -8,12 +8,12 @@ import useKeyPress from '../hooks/useKeyPress'
 export default function FileList(props) {
   const { defaultFiles, opendTab, listDelete, upDateListName } = props;
 
-  const [ediStatus, setEdiStatus] = useState(false)
+  const [ediStatus, setEdiStatus] = useState(false)//编辑状态
   const [value, setValue] = useState('')//编辑内容
   const enterPressed = useKeyPress(13);
   const escPressed = useKeyPress(27)
   let node = useRef(null);
-
+  const ediItem = defaultFiles.find(defaultFiles => defaultFiles.id === ediStatus)//编辑项
 
 
   const listEdit = (defaultFiles) => {
@@ -27,11 +27,9 @@ export default function FileList(props) {
       listDelete(ediItem)
     }
   }
-
+  //编辑和退出
   useEffect(() => {
-    const ediItem = defaultFiles.find(defaultFiles => defaultFiles.id === ediStatus)
-    console.log(ediItem)
-    if (enterPressed && ediStatus && value.trim() !== '') { //trim方法
+    if (enterPressed && ediStatus && value.trim() !== '') { 
       upDateListName(ediItem.id, value, ediItem.isNew)
       setValue('')
       setEdiStatus(false);
@@ -49,7 +47,7 @@ export default function FileList(props) {
     }
   }, [defaultFiles])
 
-  //选中效果
+  //高亮
   useEffect(() => {
     if (ediStatus) {
       node.current.focus()
@@ -90,7 +88,7 @@ export default function FileList(props) {
                   <button
                     className='icon-button col-1'
                     type="button"
-                    onClick={(e) => { listDelete(defaultFiles) }}
+                    onClick={() => { listDelete(defaultFiles) }}
                   >
                     <FontAwesomeIcon
                       title="删除"

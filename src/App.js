@@ -15,7 +15,7 @@ import fileHelper from './utils/fileHelper'
 import { faSave } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-
+//node和electron
 const { join } = window.require('path');
 const { remote } = window.require('electron')
 const Store = window.require('electron-store')
@@ -37,34 +37,35 @@ const saveFilesToStore = (files) => {
 }
 
 function App() {
-  const [files, setFiles] = useState(fileStore.get('files') || {});//从electron-store中取出
-  const [activeFileID, setActiveFileID] = useState('');//点击被激活的文件的id
-  const [openedFileIDs, setOpenedFileIDs] = useState([]); //打开文件的id，打开文件
+  const [files, setFiles] = useState(fileStore.get('files') || {});//从electron-store中取出files
+  const [activeFileID, setActiveFileID] = useState('');//点击被激活的tab，MDE的id，
+  const [openedFileIDs, setOpenedFileIDs] = useState([]); //打开tab的id，打开文件
   const [unsaveFilesIDs, setUnsaveFilesIDs] = useState([]);//tab未保存的文件
-  const [searchedFiles, setSearchedFiles] = useState([])
+  const [searchedFiles, setSearchedFiles] = useState([])//搜索的文件
+ 
+  const filesArr = objToArr(files);//转数组
   const openTabList = openedFileIDs.map(openID => {
     return files[openID];
   })
-  const filesArr = objToArr(files);
-  const fileListArr = (searchedFiles.length > 0) ? searchedFiles : filesArr;
+  const SearchListFiles = (searchedFiles.length > 0) ? searchedFiles : filesArr; //搜索时候的数据
   const activeFile = files[activeFileID];//选中的文件
-  const savedLocation = remote.app.getPath('documents') //拿到documents路径
+  const savedLocation = remote.app.getPath('documents') //获取documents路径
 
   const listDelete = (defaultFiles) => {
-    if (files[defaultFiles.id].isNew) {
-      const { [defaultFiles.id]: value, ...afterDelete } = files;
+    const id = defaultFiles.id
+    if (files[id].isNew) {
+      const { [id]: value, ...afterDelete } = files;
       setFiles(afterDelete)
     } else {
-      fileHelper.deleteFile(files[defaultFiles.id].path)
+      fileHelper.deleteFile(files[id].path)
         .then(() => {
-          const { [defaultFiles.id]: value, ...afterDelete } = files;
+          const { [id]: value, ...afterDelete } = files;
           setFiles(afterDelete)
           saveFilesToStore(afterDelete)
           tabClose(defaultFiles)
         })
     }
   }
-
   const upDateListName = (id, title, isNew) => {
     const newPath = join(savedLocation, `${title}.md`)
     const newListName = { ...files[id], title, isNew: false, path: newPath }
@@ -85,10 +86,8 @@ function App() {
         })
     }
   }
-
-  //重名的bug
   const createFile = () => {
-    const newID = Math.random()
+    const newID = Math.random();
     const newFile = {
       id: newID,
       title: '',
@@ -97,9 +96,9 @@ function App() {
       isNew: true,
     }
     setFiles({ ...files, [newID]: newFile });
-    
   }
 
+  //Tab
   const opendTab = (defaultFiles) => {
     setActiveFileID(defaultFiles.id)
     const currentList = files[defaultFiles.id]
@@ -113,15 +112,12 @@ function App() {
       setOpenedFileIDs([...openedFileIDs, defaultFiles.id])
     }
   }
-
   const setTabActive = (defaultFiles) => {
     setActiveFileID(defaultFiles.id)
   }
-
   const tabClose = (defaultFiles) => {
     const filterTab = openedFileIDs.filter(tabID => tabID !== defaultFiles.id)
     setOpenedFileIDs(filterTab)
-
     //TAB存在的情况
     if (filterTab.length > 0) {
       setActiveFileID(filterTab[filterTab.length - 1])
@@ -129,22 +125,17 @@ function App() {
       setActiveFileID('')
     }
   }
-
+  //搜索
   const searchList = (value) => {
-    const newlistFiles = fileListArr.filter(file => {
-      return file.title.includes(value);
+    const filterList = SearchListFiles.filter(files => {
+      return files.title.includes(value);
     })
-    setSearchedFiles(newlistFiles)
+    setSearchedFiles(filterList)
   }
-
-
-
-
-
+//markdown
   const ediMDE = (id, value) => {
     const newFile = { ...files[id], body: value }
     setFiles({ ...files, [id]: newFile })
-
     if (!unsaveFilesIDs.includes(id)) {
       setUnsaveFilesIDs([...unsaveFilesIDs, id])
     }
@@ -164,7 +155,7 @@ function App() {
             files={files}
           />
           <FileList
-            defaultFiles={fileListArr}
+            defaultFiles={SearchListFiles}
             activeid={activeFileID}
             opendTab={opendTab}
             listDelete={listDelete}
